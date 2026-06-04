@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تويست  | مكملات الصحة </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+    body { font-family: 'Noto Sans Arabic', system-ui, sans-serif; }
+    .hero {
+  background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), 
+              url("https://i.ibb.co/4nzRRKn8/Gemini-Generated-Image-ea5zb8ea5zb8ea5z.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 60vh; /* ارتفاع مريح للجوال */
+  display: flex;
+  align-items: center;
+}
+
+    
+
+    .product-card {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .product-card:hover {
+      transform: translateY(-15px) scale(1.05);
+      box-shadow: 0 30px 60px -15px rgb(236 72 153 / 0.3);
+    }
+    @media (min-width: 768px) {
+      .product-card:hover {
+        transform: translateY(-15px) scale(1.05);
+        box-shadow: 0 30px 60px -15px rgb(236 72 153 / 0.3);
+      }}
+
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #side-cart {
+      transition: transform 0.4s ease-in-out;
+      transform: translateX(100%);
+      width: 100%; 
+      max-width: 320px;
+    }
+    #side-cart.open {
+      transform: translateX(0);
+    }
+    .cart-overlay {
+      background: rgba(0,0,0,0.5);
+      display: none;
+    }
+    .cart-overlay.show {
+      display: block;
+    }
+
+    .add-to-cart-btn {
+      position: relative;
+      overflow: hidden;
+    }
+    .add-to-cart-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 40%;
+      height: 200%;
+      background: rgba(210, 214, 184, 0.336);
+      transform: skewX(-20deg);
+      transition: all 0.6s;
+      opacity: 0;
+    }
+    .add-to-cart-btn:active::after {
+      left: 150%;
+      opacity: 1;
+    }
+
+    .floating-cart {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ستايل العربة الجانبية */
+    #side-cart {
+      transition: transform 0.4s ease-in-out;
+      transform: translateX(100%);
+    }
+    #side-cart.open {
+      transform: translateX(0);
+    }
+    .cart-overlay {
+      background: rgba(0,0,0,0.5);
+      display: none;
+    }
+    .cart-overlay.show {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-white overflow-x-hidden">
+
+  <div id="cart-overlay" class="cart-overlay fixed inset-0 z-[60]" onclick="toggleCart()"></div>
+
+  <div id="side-cart" class="fixed top-0 right-0 h-full w-80 bg-white z-[70] shadow-2xl p-6 flex flex-col">
+    <div class="flex justify-between items-center border-b pb-4 mb-4">
+      <h2 class="text-2xl font-bold">عربتكِ</h2>
+      <button onclick="toggleCart()" class="text-xl">✕</button>
+    </div>
+    <div id="cart-items-container" class="flex-grow overflow-y-auto space-y-4 py-4 text-center text-gray-500">
+      عربتكِ فارغة حالياً
+    </div>
+    <div class="border-t pt-4">
+      <div class="flex justify-between font-bold text-lg mb-4">
+        <span>الإجمالي:</span>
+        <span id="cart-total-price">0 ر.س</span>
+      </div>
+      <button class="w-full bg-pink-600 text-white py-4 rounded-xl font-bold">إتمام الطلب</button>
+    </div>
+  </div>
+
+  <header id="header" class="bg-white border-b sticky top-0 z-50 shadow-sm transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+      <div class="flex items-center gap-10">
+        <img src="https://i.ibb.co/TMqPHXh5/885f242d-c848-4226-b36c-884abd64dc60.jpg" 
+             alt="Bloom" 
+             class="h-14 w-auto">
+        
+        <nav class="hidden md:flex gap-8 text-lg font-medium">
+          <a href="#" class="hover:text-pink-600 transition">المتجر</a>
+          <a href="#bestsellers" class="hover:text-pink-600 transition">الأكثر مبيعاً</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-7 text-2xl">
+        <i class="fa-solid fa-magnifying-glass cursor-pointer hover:text-pink-600 transition"></i>
+        <i class="fa-solid fa-user cursor-pointer hover:text-pink-600 transition"></i>
+        <i onclick="toggleCart()" class="fa-solid fa-cart-shopping cursor-pointer hover:text-pink-600 relative">
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-pink-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center transition-all">0</span>
+        </i>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero flex items-center text-white text-center relative">
+    <div class="max-w-4xl mx-auto px-6 pt-20 animate-on-scroll">
+      <h2 class="text-6xl md:text-7xl font-bold leading-tight mb-6"> قريبا... </h2>
+      <p class="text-2xl md:text-3xl mb-10">مسحوق تويست</p>
+      <div class="flex flex-col sm:flex-row gap-6 justify-center">
+        <a href="#bestsellers" onclick="smoothScrollTo('bestsellers')" class="bg-pink-600 hover:bg-pink-700 px-12 py-6 rounded-full text-2xl font-semibold shadow-xl transition transform hover:scale-105">تسوقي الآن</a>
+        
+      </div>
+    </div>
+  </section>
+
+  <section id="bestsellers" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-end mb-12 animate-on-scroll">
+        <div>
+          <h2 class="text-5xl font-bold">الأكثر مبيعاً</h2>
+          <p class="text-xl text-gray-600">اختاري نكهتكِ المفضلة</p>
+        </div>
+        <a href="#" class="text-pink-600 font-semibold flex items-center gap-2 hover:underline">عرض الكل →</a>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="products-grid"></div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-white">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-4xl font-bold mb-12 animate-on-scroll">آراء العملاء</h2>
+      <div id="testimonial-slider" class="relative overflow-hidden h-64"></div>
+    </div>
+  </section>
+
+  <section class="bg-gradient-to-r from-[#bedeb4] to-[#bedeb4] py-20 text-[#215b32]">
+    <div class="max-w-4xl mx-auto text-center px-6 animate-on-scroll">
+      <h2 class="text-5xl font-bold mb-6">اشتركي ووفّري حتى 25%</h2>
+      <p class="text-2xl mb-10">شحن مجاني • ألغي في أي وقت</p>
+      <button onclick="subscribe()" class="bg-white text-pink-600 px-16 py-7 rounded-full text-2xl font-semibold hover:scale-110 transition">ابدئي الاشتراك الآن</button>
+    </div>
+  </section>
+
+  <div onclick="toggleCart()" class="fixed bottom-8 left-8 bg-pink-600 text-white p-5 rounded-3xl shadow-2xl flex items-center gap-4 cursor-pointer floating-cart z-50 hover:scale-110 transition">
+    <i class="fa-solid fa-cart-shopping text-3xl"></i>
+    <div>
+      <p class="font-semibold">السلة</p>
+      <p id="floating-count" class="text-sm">0 منتجات</p>
+    </div>
+  </div>
+
+  <footer class="bg-[#215b32] text-white py-16">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <img src="https://i.ibb.co/Xfs9Z91G/image-removebg-preview.png" 
+           alt="Bloom" class="h-16 mx-auto mb-6 opacity-80">
+      <p class="text-lg">عافيتكِ تبدأ من هنا</p>
+      <p class="mt-10 text-sm opacity-70">© 2026 تويست نيوتريشن - جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+
+  <script>
+    // بيانات المنتجات مع روابط صور حقيقية
+    const products = [
+      {id: 1, name:  "تويست بوب فراولة بالكريمة", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/vCWpShsH/image.png"},
+      {id: 2, name: "تويست بوب ليمون بالتوت", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/7dvX4jY9/image.png"},
+      {id: 3, name: "تويست بوب برتقال كلاسيكي ", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/r2DF8sGR/image.png"},
+      {id: 4, name: "تويست بوب أناناس بالخوخ", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/hxfRmwx6/image.png"},
+      {id: 5, name: " تويست بوب كرز ", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/hxs55J6g/image.png"},
+      {id: 6, name: "تويست طاقة تفاح", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/QjJmG7P6/image.png"},
+      {id: 7, name: "تويست طاقة كرز بالليمون", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/gLybTfGM/image.png"},
+      {id: 8, name: " تويست طاقة فراولة بالبطيخ", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/zHxRSbxK/image.png"},
+      {id: 9, name: "تويست طاقة مانجو بالخوخ", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/JWs5sKrb/image.png"},
+      {id: 10, name: "تويست طاقة كرز", flavor: "", price: 9, old: 12, image: "https://i.ibb.co/jvR4Nn1Q/image.png"},
+      {id: 11, name: "مجموعة energy", flavor: "12x", price: 99, old: 108, image: "https://i.ibb.co/XxVRBqtS/image.png"},
+      {id: 12, name: " مجموعة twist pop", flavor: "12x", price: 99, old: 108, image: "https://i.ibb.co/tMXQKJGy/image.png"},
+    ];
+
+    let cart = [];
+
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = products.map((p, i) => `
+        <div class="product-card bg-white rounded-3xl overflow-hidden shadow animate-on-scroll" style="animation-delay: ${i * 100}ms">
+          <div class="h-72 bg-gray-50 flex items-center justify-center p-6 transition-transform hover:scale-110">
+            <img src="${p.image}" alt="${p.name}" class="h-full object-contain">
+          </div>
+          <div class="p-6">
+            <span class="bg-pink-100 text-pink-600 text-xs font-bold px-3 py-1 rounded-full">خصم</span>
+            <h3 class="font-bold text-xl mt-3">${p.name}</h3>
+            <p class="text-gray-600">${p.flavor} 355  مل </ p> 
+            <div class="flex items-baseline gap-3 mt-4">
+              <span class="text-3xl font-bold">${p.price} ر.س</span>
+              <span class="line-through text-gray-400">${p.old} ر.س</span>
+            </div>
+            <button onclick="addToCart(this, ${p.id})" class="add-to-cart-btn mt-6 w-full bg-black hover:bg-pink-600 text-white py-4 rounded-2xl font-semibold transition">أضف إلى السلة</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleCart() {
+      document.getElementById('side-cart').classList.toggle('open');
+      document.getElementById('cart-overlay').classList.toggle('show');
+    }
+
+    function addToCart(btn, id) {
+      const product = products.find(p => p.id === id);
+      cart.push(product);
+      updateCartCount();
+      renderCartItems();
+
+      const originalText = btn.textContent;
+      btn.style.transform = 'scale(0.95)';
+      btn.textContent = '✅ تمت الإضافة!';
+      
+      setTimeout(() => {
+        btn.style.transform = 'scale(1)';
+        btn.textContent = originalText;
+      }, 1200);
+
+      createFloatingEmoji();
+    }
+
+    function renderCartItems() {
+      const container = document.getElementById('cart-items-container');
+      const totalDisplay = document.getElementById('cart-total-price');
+      
+      if (cart.length === 0) {
+        container.innerHTML = "عربتكِ فارغة حالياً";
+        totalDisplay.textContent = "0 ر.س";
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = cart.map((item, index) => {
+        total += item.price;
+        return `
+          <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl relative">
+            <img src="${item.image}" class="w-16 h-16 object-contain bg-white rounded-lg">
+            <div class="text-right">
+              <p class="font-bold text-sm">${item.name}</p>
+              <p class="text-pink-600 font-bold">${item.price} ر.س</p>
+            </div>
+            <button onclick="removeFromCart(${index})" class="absolute left-2 top-2 text-gray-300">✕</button>
+          </div>
+        `;
+      }).join('');
+      totalDisplay.textContent = `${total} ر.س`;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+      renderCartItems();
+    }
+
+    function updateCartCount() {
+      document.getElementById('cart-count').textContent = cart.length;
+      document.getElementById('floating-count').textContent = `${cart.length} منتجات`;
+    }
+
+    function createFloatingEmoji() {
+      const emoji = document.createElement('div');
+      emoji.textContent = '🌸';
+      emoji.style.position = 'fixed';
+      emoji.style.left = `${Math.random() * 100}vw`;
+      emoji.style.bottom = '100px';
+      emoji.style.fontSize = '2.5rem';
+      emoji.style.zIndex = '9999';
+      emoji.style.transition = 'all 1.8s ease-out';
+      document.body.appendChild(emoji);
+      setTimeout(() => {
+        emoji.style.transform = `translateY(-400px)`;
+        emoji.style.opacity = '0';
+      }, 100);
+      setTimeout(() => emoji.remove(), 2000);
+    }
+
+    // Testimonials (No change)
+    const testimonials = [
+      {text: "احلى شي شريته للصيف", name: "سارة أ.", city: "الرياض"},
+      {text: "النكهات مميزه جدا", name: "نورة خ.", city: "جدة"},
+      {text: "أفضل مشروبات جربتها، الطعم لذيذ جداً", name: "لينا م.", city: "الدمام"},
+    
+    ];
+
+    let currentTestimonial = 0;
+    function renderTestimonials() {
+      const slider = document.getElementById('testimonial-slider');
+      slider.innerHTML = `
+        <div class="absolute inset-0 flex items-center justify-center transition-opacity duration-700" id="testimonial-content">
+          <div class="max-w-lg bg-white p-10 rounded-3xl shadow-xl">
+            <p class="text-xl italic text-gray-700">"${testimonials[currentTestimonial].text}"</p>
+            <div class="mt-8 flex items-center gap-4 justify-center">
+              <div class="w-12 h-12 bg-pink-200 rounded-full"></div>
+              <div>
+                <p class="font-semibold">${testimonials[currentTestimonial].name}</p>
+                <p class="text-sm text-gray-500">${testimonials[currentTestimonial].city}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function nextTestimonial() {
+      currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+      renderTestimonials();
+    }
+
+    function smoothScrollTo(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function subscribe() {
+      alert('🎉 تم تسجيل اشتراكك بنجاح! سنرسل لك التفاصيل قريباً');
+    }
+
+    function handleScrollAnimations() {
+      const elements = document.querySelectorAll('.animate-on-scroll');
+      elements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.85) {
+          el.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 100) {
+        header.classList.add('bg-white/95', 'backdrop-blur-md', 'shadow-md');
+      } else {
+        header.classList.remove('bg-white/95', 'backdrop-blur-md', 'shadow-md');
+      }
+      handleScrollAnimations();
+    });
+
+    window.onload = () => {
+      renderProducts();
+      renderTestimonials();
+      setInterval(nextTestimonial, 5000);
+      handleScrollAnimations();
+    };
+  </script>
+</body>
+</html>

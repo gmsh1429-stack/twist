@@ -1,0 +1,135 @@
+:root {
+    --pink: #e84393;
+    --black: #2c2c2c;
+    --gray: #555;
+    --shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+html {
+    font-size: 62.5%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 9rem;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    line-height: 1.7;
+    color: var(--black);
+    background: #f9f9f9;
+    direction: rtl;
+}
+
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    padding: 1.8rem 9%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    height: 90px;
+}
+
+/* Logo */
+header .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+header .logo img {
+    height: 54px;
+}
+
+header .navbar {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+}
+
+header .navbar a {
+    margin: 0 2rem;
+    font-size: 1.8rem;
+    color: var(--black);
+    font-weight: 600;
+    position: relative;
+}
+
+
+header .navbar a::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    right: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--pink);
+    transition: 0.3s;
+}
+
+header .navbar a:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+header .navbar a:hover {
+    color: var(--pink);
+}
+
+
+header .icons {
+    margin-left: 2rem;
+}
+
+header .icons a {
+    font-size: 1.9rem;
+    color: var(--black);
+    margin-right: 1.2rem;
+}
+
+header .icons a:hover {
+    color: var(--pink);
+}
+
+
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 991px) {
+    html { font-size: 58%; }
+    header { padding: 1.8rem 5%; }
+}
+
+@media (max-width: 768px) {
+    header .navbar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        transform: none;
+        background: white;
+        flex-direction: column;
+        padding: 2rem 0;
+        box-shadow: var(--shadow);
+        display: none;
+    }
+
+    header .navbar a {
+        margin: 1.5rem 0;
+        font-size: 2.2rem;
+    }
+}
